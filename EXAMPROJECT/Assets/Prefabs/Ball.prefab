@@ -203,8 +203,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b86ec0334a67524fa5d4ea99207e46f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
-  position: {x: 0, y: 0}
+  id: 0
+  Type: Ball
+  text: {fileID: 0}
+  TempTrans: {fileID: 0}
 --- !u!1 &7962452714529259353
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,12 +299,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 2
+  m_fontSize: 2.2
   m_fontSizeBase: 2
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 0.1
+  m_fontSizeMax: 3
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256

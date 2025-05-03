@@ -10,10 +10,11 @@ public class Ball : MonoBehaviour, ISaveable, ILoadable
     // Isaveable implementation
     public string id;
     private  Vector2 position;
+    public string Type;
     
     public SaveItem SaveData()
     {
-        return new SaveItem(){id = this.id, position = this.transform.position};
+        return new SaveItem(){id = this.id,type = this.Type, position = this.transform.position};
     }
 
     
@@ -34,8 +35,11 @@ public class Ball : MonoBehaviour, ISaveable, ILoadable
     
     private void Awake()
     {
+       
         FindReferences();
     }
+
+    
 
     private void Update()
     {
@@ -45,7 +49,7 @@ public class Ball : MonoBehaviour, ISaveable, ILoadable
    
     private void FindReferences()
     {
-        //bit of a weird way to get a component ina grandchild.. but it works
+        //bit of a weird way to get a component in a grandchild.. but it works
         TempTrans = this.GetComponentInChildren<Transform>();
         text = TempTrans.GetComponentInChildren<TextMeshProUGUI>();
         if (TempTrans == null)

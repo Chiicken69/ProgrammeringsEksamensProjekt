@@ -1,10 +1,27 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public class SaveManager : MonoBehaviour
 {
+    public GameObject[] prefabs;
+    [SerializeField] public Dictionary<string, GameObject> prefabByType;
+
+    private void Awake()
+    {
+        // build the dictionary so key=typeName, value=prefab
+        prefabByType = new Dictionary<string, GameObject>();
+        foreach (var prefab in prefabs)
+        {
+            prefabByType[prefab.name] = prefab;
+            Debug.Log("Added: (" + prefab.name + ") to the dictionary" );
+            
+        }
+        
+    }
 
 
     [ContextMenu("Save all")]
@@ -73,7 +90,31 @@ public class SaveManager : MonoBehaviour
             }
             else
             {
+                
+                if (prefabByType.TryGetValue(item.type, out GameObject prefab))
+                {
+                   // GameObject tempGameObject = BallSpawner.instance.SpawnBall(prefab);
+                    GameObject tempGameObject = Instantiate(prefab);
+                    ILoadable Loadable = tempGameObject.GetComponent<ILoadable>();
+                    if (Loadable != null)
+                    {
+                        Loadable.LoadData(item);
+                        applied++;
+                    }
+                    else
+                    {
+                        Debug.LogError($"$Prefab {item.type} has no Iloadable");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"No prefab found for type {item.type}");
+                }
+                
                 Debug.LogWarning($"No Iloadable with ID '{item.id}' in scene");
+                
+                
+                
             }
         }
         Debug.Log($"Applied data to {applied}/{wrapper.items.Count} loadable objects");
@@ -100,5 +141,7 @@ public class SaveManager : MonoBehaviour
         
         
     }
-   
+
 }
+
+

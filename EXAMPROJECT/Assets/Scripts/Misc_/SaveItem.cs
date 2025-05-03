@@ -5,6 +5,6 @@ using UnityEngine;
 public class SaveItem
 {
     public string id;
-    //public string Type;
+    public string type;
     public Vector2 position;
 }
