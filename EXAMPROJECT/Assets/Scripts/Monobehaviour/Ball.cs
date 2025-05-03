@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Color = System.Drawing.Color;
 
@@ -6,9 +7,11 @@ public class Ball : MonoBehaviour, ISaveable
     
     // Interface implementations
     public string id;
-    public Vector2 position;
+    private  Vector2 position;
+
     
-    
+
+
     //ball stuff
     
     
