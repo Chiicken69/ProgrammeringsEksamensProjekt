@@ -1,6 +1,8 @@
 using UnityEngine;
 
-public class ILoadable
+public interface ILoadable
 {
-    
+    string GetId();
+    string GetTypeKey();
+    void LoadData(SaveItem data);
 }
