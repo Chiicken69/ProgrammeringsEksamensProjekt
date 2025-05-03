@@ -3,6 +3,6 @@ using UnityEngine;
 public interface ILoadable
 {
     string GetId();
-    string GetTypeKey();
+    //string GetTypeKey();
     void LoadData(SaveItem data);
 }
