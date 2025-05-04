@@ -22,19 +22,31 @@ public class BallSpawner : MonoBehaviour
         int ID = 0;
         while (!UniqueIdFound)
         {
-            foreach (var ball in balls)
+            if (balls.Length <=0)
             {
-                if (ID.ToString() == ball.id)
+                UniqueIdFound = true;
+            }
+            else
+            {
+                bool IDExists = false;
+                for (int i = 0; i < balls.Length; i++)
                 {
-                    ID++;
+                    if (ID.ToString() == balls[i].id)
+                    {
+                        IDExists = true;
+                        break;
+                    }
                     
                 }
-                else
+
+                if (!IDExists)
                 {
                     UniqueIdFound = true;
                 }
-               
+                else ID++;
             }
+            
+            
         }
 
         return ID;
