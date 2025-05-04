@@ -93,8 +93,8 @@ public class SaveManager : MonoBehaviour
                 
                 if (prefabByType.TryGetValue(item.type, out GameObject prefab))
                 {
-                   // GameObject tempGameObject = BallSpawner.instance.SpawnBall(prefab);
-                    GameObject tempGameObject = Instantiate(prefab);
+                    GameObject tempGameObject = BallSpawner.instance.SpawnBall(prefab);
+                   // GameObject tempGameObject = Instantiate(prefab);
                     ILoadable Loadable = tempGameObject.GetComponent<ILoadable>();
                     if (Loadable != null)
                     {
@@ -111,7 +111,7 @@ public class SaveManager : MonoBehaviour
                     Debug.LogWarning($"No prefab found for type {item.type}");
                 }
                 
-                Debug.LogWarning($"No Iloadable with ID '{item.id}' in scene");
+               
                 
                 
                 

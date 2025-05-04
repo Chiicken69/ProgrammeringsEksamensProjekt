@@ -7,7 +7,7 @@ public class BallSpawner : MonoBehaviour
 
     private void Awake()
     {
-        //instance = this;
+        instance = this;
     }
     private string GenerateUniqueID()
     {
