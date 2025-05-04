@@ -1,4 +1,7 @@
+using Unity.Mathematics;
 using UnityEngine;
+using static UnityEngine.Random;
+using Random = UnityEngine.Random;
 
 public class BallSpawner : MonoBehaviour
 {
@@ -53,10 +56,10 @@ public class BallSpawner : MonoBehaviour
 
     }
 
-    [ContextMenu("test")]
-    public void testFunction()
+    [ContextMenu("Spawn random ball")]
+    public void SpawnRandomBall()
     {
-        SpawnBall(PrefabBall);
+      SpawnBall(PrefabBall);
     }
 
     public GameObject SpawnBall(GameObject ball)
@@ -64,9 +67,10 @@ public class BallSpawner : MonoBehaviour
        
         
         ball.GetComponent<Ball>().id = GenerateUniqueID();
-        
-        
-        return Instantiate(ball);
+
+        int randX = Random.Range(-13, 13);
+        int randY = Random.Range(-5, 10);
+        return Instantiate(ball, new Vector3(randX, randY), quaternion.identity);
 
     }
 }

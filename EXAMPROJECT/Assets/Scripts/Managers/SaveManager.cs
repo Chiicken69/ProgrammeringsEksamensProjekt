@@ -51,6 +51,8 @@ public class SaveManager : MonoBehaviour
 [ContextMenu("Load all")]
     public void CallLoadAll()
     {
+       
+        
         //find save file
         string path = Path.Combine(Application.persistentDataPath, "savegame.json");
         if (!File.Exists(path))
@@ -59,13 +61,17 @@ public class SaveManager : MonoBehaviour
             return;
         }
         
+        
         // Read and parse the JSON save file :)
         string json = File.ReadAllText(path);
         SaveWrapper wrapper = JsonUtility.FromJson<SaveWrapper>(json);
         
         Debug.Log("Loaded JSON with " + (wrapper.items?.Count ?? 0) + " items");
+        //deletes all objects with Iloadable
+        CleanUpScene();
 
         //find all loadable behaviours in scene and index them
+        
         var existing = new Dictionary<string, ILoadable>();
         MonoBehaviour[] Behaviours = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
 
@@ -140,6 +146,19 @@ public class SaveManager : MonoBehaviour
         return new SaveWrapper {items = data };
         
         
+    }
+
+    private void CleanUpScene()
+    {
+        MonoBehaviour[] behaviours = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            ILoadable loadable = behaviours[i] as ILoadable;
+            if (loadable != null)
+            {
+                Destroy(behaviours[i].gameObject);
+            }
+        }
     }
 
 }
