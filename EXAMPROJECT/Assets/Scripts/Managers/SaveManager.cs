@@ -1,17 +1,29 @@
-using System;
+
 using System.Collections.Generic;
 using System.IO;
-using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 public class SaveManager : MonoBehaviour
 {
+    public static SaveManager Instance;
+     
+    
     public GameObject[] prefabs;
     [SerializeField] public Dictionary<string, GameObject> prefabByType;
 
     private void Awake()
     {
+        //singleton pattern :3
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            DestroyImmediate(gameObject);
+        }
+        
         // build the dictionary so key=typeName, value=prefab
         prefabByType = new Dictionary<string, GameObject>();
         foreach (var prefab in prefabs)
@@ -24,7 +36,12 @@ public class SaveManager : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Searches all behaviours in scene and saves all objects with interface Isaveable to data list
+    /// </summary>
+    /// <returns></returns>
     [ContextMenu("Save all")]
+    
     public void CallSaveOnAll()
     {
         var Data = new List<SaveItem>();
@@ -44,10 +61,12 @@ public class SaveManager : MonoBehaviour
         }
         Debug.Log("Scanned: " + allBehaviours.Length + " behaviours");
         Debug.Log(Data.Count + " items added to data list");
-        
-        
         WriteToDisk(SerializeToJson(WrapData(Data)));
     }
+    /// <summary>
+    /// Deletes all objects in scene with Iloadable and instantiates new objects with data from save file
+    /// </summary>
+    /// <returns></returns>
 [ContextMenu("Load all")]
     public void CallLoadAll()
     {
@@ -114,7 +133,10 @@ public class SaveManager : MonoBehaviour
         
         
     }
-
+    /// <summary>
+    /// Searches all behaviours and deletes objects with Iloadable interface
+    /// </summary>
+    /// <returns></returns>
     private void CleanUpScene()
     {
         MonoBehaviour[] behaviours = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
