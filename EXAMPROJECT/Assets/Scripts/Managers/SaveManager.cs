@@ -51,79 +51,46 @@ public class SaveManager : MonoBehaviour
 [ContextMenu("Load all")]
     public void CallLoadAll()
     {
-       
-        
-        //find save file
         string path = Path.Combine(Application.persistentDataPath, "savegame.json");
         if (!File.Exists(path))
         {
             Debug.LogWarning("No save file found at: " + path);
             return;
         }
-        
-        
-        // Read and parse the JSON save file :)
+
+        // Step 1: Load the data
         string json = File.ReadAllText(path);
         SaveWrapper wrapper = JsonUtility.FromJson<SaveWrapper>(json);
-        
         Debug.Log("Loaded JSON with " + (wrapper.items?.Count ?? 0) + " items");
-        //deletes all objects with Iloadable
+
+        // Step 2: Destroy all existing ILoadable objects
         CleanUpScene();
 
-        //find all loadable behaviours in scene and index them
-        
-        var existing = new Dictionary<string, ILoadable>();
-        MonoBehaviour[] Behaviours = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
-
-        for (int i = 0; i < Behaviours.Length; i++)
-        {
-            ILoadable loadable = Behaviours[i] as ILoadable;
-            if (loadable != null)
-            {
-                existing[loadable.GetId()] = loadable;
-            }
-        }
-        
-        // apply the data
-
+        // Step 3: Recreate everything from save
         int applied = 0;
         foreach (var item in wrapper.items)
         {
-            if (existing.ContainsKey(item.id))
+            if (prefabByType.TryGetValue(item.type, out GameObject prefab))
             {
-                existing[item.id].LoadData(item);
-                applied++;
-            }
-            else
-            {
-                
-                if (prefabByType.TryGetValue(item.type, out GameObject prefab))
+                GameObject tempGameObject = BallSpawner.instance.SpawnBall(prefab);
+                ILoadable loadable = tempGameObject.GetComponent<ILoadable>();
+                if (loadable != null)
                 {
-                    GameObject tempGameObject = BallSpawner.instance.SpawnBall(prefab);
-                   // GameObject tempGameObject = Instantiate(prefab);
-                    ILoadable Loadable = tempGameObject.GetComponent<ILoadable>();
-                    if (Loadable != null)
-                    {
-                        Loadable.LoadData(item);
-                        applied++;
-                    }
-                    else
-                    {
-                        Debug.LogError($"$Prefab {item.type} has no Iloadable");
-                    }
+                    loadable.LoadData(item);
+                    applied++;
                 }
                 else
                 {
-                    Debug.LogWarning($"No prefab found for type {item.type}");
+                    Debug.LogError($"Prefab {item.type} has no ILoadable component.");
                 }
-                
-               
-                
-                
-                
+            }
+            else
+            {
+                Debug.LogWarning($"No prefab found for type {item.type}");
             }
         }
-        Debug.Log($"Applied data to {applied}/{wrapper.items.Count} loadable objects");
+
+        Debug.Log($"Instantiated and applied data to {applied}/{wrapper.items.Count} objects");
     }
 
     private string SerializeToJson(SaveWrapper WrappedData)
